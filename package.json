@@ -1,0 +1,20 @@
+{
+  "name": "@fboes/geojson",
+  "version": "1.0.0",
+  "description": "This dual-purpose library creates GeoJSON according to RFC 7946 in NodeJS as well as directly in your browser.",
+  "main": "geojson.js",
+  "scripts": {
+    "prettier": "npx prettier --cache --write .",
+    "eslint": "npx eslint *.js --fix",
+    "build": "npm run prettier && npm run eslint",
+    "test": "node geojson-test.js"
+  },
+  "author": "Frank Boës",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "3.2.4"
+  }
+}
