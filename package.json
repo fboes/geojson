@@ -9,12 +9,19 @@
     "build": "npm run prettier && npm run eslint",
     "test": "node geojson-test.js"
   },
-  "author": "Frank Boës",
+  "author": "Frank Boës <info@3960.org> (https://3960.org/)",
   "license": "MIT",
   "type": "module",
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "3.2.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fboes/geojson.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fboes/geojson/issues"
+  },
 }
