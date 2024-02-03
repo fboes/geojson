@@ -3,180 +3,242 @@
 import * as GeoJson from "./geojson.js";
 
 const Test = {
+  console: false,
+
   toFromJson: (object) => {
     return JSON.parse(JSON.stringify(object));
   },
 
-  consoleUltra: (object, label) => {
-    label && console.group(label);
+  consoleUltra: (object) => {
+    if (!Test.console) {
+      return;
+    }
     console.dir(object, { depth: null });
-    label && console.groupEnd();
-  },
-
-  /**
-   * @param {Boolean} condition
-   * @param {?String} message
-   */
-  assert(condition, message = null) {
-    console.assert(condition, message);
   },
 };
 
+const assert = {
+  /**
+   * Check if `actual` strictly equals `b`. Throw Error on error.
+   * @param {any} actual
+   * @param {any} expected
+   * @param {String} message
+   */
+  strictEqual(actual, expected, message = '') {
+    message === '' || (message += " | ");
+    message += message = `'${actual}' equals '${expected}'`;
+
+    assert.ok(actual == expected, message)
+  },
+
+  /**
+   * Check if `assertion` is `true`. Throw Error on error.
+   * @param {Boolean} assertion
+   * @param {String} message
+   */
+  ok(assertion, message = 'Assertion') {
+    console.log((assertion ? "✅" : "💥") + " " + message);
+    if (!assertion) {
+      throw new Error(`"${message}" failed`);
+    }
+  }
+};
+
 // -----------------------------------------------------------------------------
-// GeoJson.Point
+console.group("GeoJson.Point");
 {
   const geoJsonPoint = Test.toFromJson(new GeoJson.Point(1, 2, 3));
-  Test.consoleUltra(geoJsonPoint, "GeoJson.Point");
+  Test.consoleUltra(geoJsonPoint);
 
-  Test.assert(geoJsonPoint.coordinates[0] === 1, "Coordinates match");
-  Test.assert(geoJsonPoint.coordinates[1] === 2, "Coordinates match");
-  Test.assert(geoJsonPoint.coordinates[2] === 3, "Coordinates match");
+  assert.strictEqual(geoJsonPoint.type, "Point", "Type matches");
+  assert.strictEqual(geoJsonPoint.coordinates.length, 3, "3 coordinates");
+  assert.strictEqual(geoJsonPoint.coordinates[0], 1, "Coordinates match");
+  assert.strictEqual(geoJsonPoint.coordinates[1], 2, "Coordinates match");
+  assert.strictEqual(geoJsonPoint.coordinates[2], 3, "Elevation matches");
 }
 {
   const geoJsonPoint = Test.toFromJson(new GeoJson.Point(1, 2));
-  Test.consoleUltra(geoJsonPoint, "GeoJson.Point");
+  Test.consoleUltra(geoJsonPoint);
 
-  Test.assert(geoJsonPoint.coordinates[0] === 1, "Coordinates match");
-  Test.assert(geoJsonPoint.coordinates[1] === 2, "Coordinates match");
-  Test.assert(geoJsonPoint.coordinates[2] === undefined, "No elevation");
+  assert.strictEqual(geoJsonPoint.type, "Point", "Type matches");
+  assert.strictEqual(geoJsonPoint.coordinates.length, 2, "2 coordinates");
+  assert.strictEqual(geoJsonPoint.coordinates[0], 1, "Coordinates match");
+  assert.strictEqual(geoJsonPoint.coordinates[1], 2, "Coordinates match");
+  assert.ok(geoJsonPoint.coordinates[2] === undefined, "No elevation");
 }
+console.groupEnd();
 
 // -----------------------------------------------------------------------------
-// GeoJson.MultiPoint
+console.group("GeoJson.MultiPoint");
 {
   const geoJsonGeometryMultiPoint = Test.toFromJson(
     new GeoJson.MultiPoint([new GeoJson.Point(0, 0, 0), new GeoJson.Point(1, 0, 1), new GeoJson.Point(0, 1, 2)]),
   );
-  Test.consoleUltra(geoJsonGeometryMultiPoint, "GeoJson.MultiPoint");
+  Test.consoleUltra(geoJsonGeometryMultiPoint);
 
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[0][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[0][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[0][2] === 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.type, "MultiPoint", "Type matches");
 
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[1][0] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[1][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[1][2] === 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[0][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[0][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[0][2], 0, "Elevation matches");
 
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[2][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[2][1] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPoint.coordinates[2][2] === 2, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[1][0], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[1][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[1][2], 1, "Elevation matches");
+
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[2][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[2][1], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPoint.coordinates[2][2], 2, "Elevation matches");
 }
+console.groupEnd();
 
 // -----------------------------------------------------------------------------
-// GeoJson.LineString
+console.group("GeoJson.LineString");
 {
   const geoJsonGeometryLineString = Test.toFromJson(
     new GeoJson.LineString([new GeoJson.Point(0, 0, 0), new GeoJson.Point(1, 0, 1), new GeoJson.Point(0, 1, 2)]),
   );
-  Test.consoleUltra(geoJsonGeometryLineString, "GeoJson.LineString");
+  Test.consoleUltra(geoJsonGeometryLineString);
 
-  Test.assert(geoJsonGeometryLineString.coordinates[0][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryLineString.coordinates[0][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryLineString.coordinates[0][2] === 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.type, "LineString", "Type matches");
 
-  Test.assert(geoJsonGeometryLineString.coordinates[1][0] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryLineString.coordinates[1][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryLineString.coordinates[1][2] === 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[0][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[0][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[0][2], 0, "Coordinates match");
 
-  Test.assert(geoJsonGeometryLineString.coordinates[2][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryLineString.coordinates[2][1] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryLineString.coordinates[2][2] === 2, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[1][0], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[1][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[1][2], 1, "Coordinates match");
+
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[2][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[2][1], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryLineString.coordinates[2][2], 2, "Coordinates match");
 }
+console.groupEnd();
 
 // -----------------------------------------------------------------------------
-// GeoJson.MultiLineString
+console.group("GeoJson.MultiLineString");
 {
   const geoJsonGeometryMultiLineString = Test.toFromJson(
     new GeoJson.MultiLineString([
       new GeoJson.LineString([new GeoJson.Point(0, 0, 0), new GeoJson.Point(1, 0, 1), new GeoJson.Point(0, 1, 2)]),
     ]),
   );
-  Test.consoleUltra(geoJsonGeometryMultiLineString, "GeoJson.MultiLineString");
+  Test.consoleUltra(geoJsonGeometryMultiLineString);
 
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][0][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][0][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][0][2] === 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.type, "MultiLineString", "Type matches");
 
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][1][0] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][1][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][1][2] === 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][0][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][0][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][0][2], 0, "Coordinates match");
 
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][2][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][2][1] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiLineString.coordinates[0][2][2] === 2, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][1][0], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][1][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][1][2], 1, "Coordinates match");
+
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][2][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][2][1], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiLineString.coordinates[0][2][2], 2, "Coordinates match");
 }
+console.groupEnd();
 
 // -----------------------------------------------------------------------------
-// GeoJson.Polygon
+console.group("GeoJson.Polygon");
 {
   const geoJsonGeometryPolygon = Test.toFromJson(
     new GeoJson.Polygon([new GeoJson.Point(0, 0, 0), new GeoJson.Point(1, 0, 1), new GeoJson.Point(0, 1, 2)]),
   );
-  Test.consoleUltra(geoJsonGeometryPolygon, "GeoJson.Polygon");
+  Test.consoleUltra(geoJsonGeometryPolygon);
 
-  Test.assert(geoJsonGeometryPolygon.coordinates[0][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryPolygon.coordinates[0][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryPolygon.coordinates[0][2] === 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.type, "Polygon", "Type matches");
 
-  Test.assert(geoJsonGeometryPolygon.coordinates[1][0] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryPolygon.coordinates[1][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryPolygon.coordinates[1][2] === 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[0][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[0][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[0][2], 0, "Coordinates match");
 
-  Test.assert(geoJsonGeometryPolygon.coordinates[2][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryPolygon.coordinates[2][1] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryPolygon.coordinates[2][2] === 2, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[1][0], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[1][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[1][2], 1, "Coordinates match");
+
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[2][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[2][1], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryPolygon.coordinates[2][2], 2, "Coordinates match");
 }
+console.groupEnd();
 
 // -----------------------------------------------------------------------------
-// GeoJson.MultiLineString
+console.group("GeoJson.MultiPolygon");
 {
   const geoJsonGeometryMultiPolygon = Test.toFromJson(
     new GeoJson.MultiPolygon([
       new GeoJson.Polygon([new GeoJson.Point(0, 0, 0), new GeoJson.Point(1, 0, 1), new GeoJson.Point(0, 1, 2)]),
     ]),
   );
-  Test.consoleUltra(geoJsonGeometryMultiPolygon, "GeoJson.MultiLineString");
+  Test.consoleUltra(geoJsonGeometryMultiPolygon);
 
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][0][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][0][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][0][2] === 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.type, "MultiPolygon", "Type matches");
 
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][1][0] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][1][1] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][1][2] === 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][0][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][0][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][0][2], 0, "Coordinates match");
 
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][2][0] === 0, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][2][1] === 1, "Coordinates match");
-  Test.assert(geoJsonGeometryMultiPolygon.coordinates[0][2][2] === 2, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][1][0], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][1][1], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][1][2], 1, "Coordinates match");
+
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][2][0], 0, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][2][1], 1, "Coordinates match");
+  assert.strictEqual(geoJsonGeometryMultiPolygon.coordinates[0][2][2], 2, "Coordinates match");
 }
+console.groupEnd();
 
 // -----------------------------------------------------------------------------
-// GeoJson.Feature
+console.group("GeoJson.Feature");
 {
   const geoJsonFeature = Test.toFromJson(new GeoJson.Feature(new GeoJson.Point(1, 2, 3), { title: "Test" }));
-  Test.consoleUltra(geoJsonFeature, "GeoJson.Feature");
+  Test.consoleUltra(geoJsonFeature);
+
+  assert.strictEqual(geoJsonFeature.type, "Feature", "Type matches");
+  assert.strictEqual(geoJsonFeature.properties.title, "Test", "Feature.properties.title");
+  assert.strictEqual(geoJsonFeature.geometry.type, "Point", "Feature.geometry.type");
+  assert.ok(geoJsonFeature.id === undefined, "No id");
 }
 {
-  const geoJsonFeature = Test.toFromJson(new GeoJson.Feature(new GeoJson.Point(1, 2, 3)));
-  Test.consoleUltra(geoJsonFeature, "GeoJson.Feature");
+  const geoJsonFeature = Test.toFromJson(new GeoJson.Feature(new GeoJson.Point(1, 2, 3), {}, "id"));
+  Test.consoleUltra(geoJsonFeature);
+
+  assert.strictEqual(geoJsonFeature.type, "Feature", "Type matches");
+  assert.ok(geoJsonFeature.properties === undefined, "No properties");
+  assert.strictEqual(geoJsonFeature.geometry.type, "Point", "Feature.geometry.type");
+  assert.strictEqual(geoJsonFeature.id, "id", "Has id");
 }
 {
-  const geoJsonFeature = Test.toFromJson(GeoJson.Feature.createWithPoint(1, 2, null, "Test"));
-  Test.consoleUltra(geoJsonFeature, "GeoJson.Feature");
+  const geoJsonFeature = Test.toFromJson(GeoJson.Feature.createWithPoint(1, 2, null, "Test", "id"));
+  Test.consoleUltra(geoJsonFeature);
+
+  assert.strictEqual(geoJsonFeature.type, "Feature", "Type matches");
+  assert.strictEqual(geoJsonFeature.properties.title, "Test", "Feature.properties.title");
+  assert.strictEqual(geoJsonFeature.geometry.type, "Point", "Feature.geometry.type");
+  assert.strictEqual(geoJsonFeature.id, "id", "Has id");
 }
 {
   const geoJsonFeature = Test.toFromJson(GeoJson.Feature.createWithPoint(1, 2, 3));
-  Test.consoleUltra(geoJsonFeature, "GeoJson.Feature");
+  Test.consoleUltra(geoJsonFeature);
+
+  assert.strictEqual(geoJsonFeature.type, "Feature", "Type matches");
+  assert.ok(geoJsonFeature.properties === undefined, "No properties");
+  assert.strictEqual(geoJsonFeature.geometry.type, "Point", "Feature.geometry.type");
 }
+console.groupEnd();
 
 // -----------------------------------------------------------------------------
-// GeoJson.FeatureCollection
+console.group("GeoJson.FeatureCollection");
 {
   const geoJsonFeatureCollection = Test.toFromJson(
     new GeoJson.FeatureCollection([new GeoJson.Feature(new GeoJson.Point(1, 2, 3), { title: "Test" })]),
   );
-  Test.assert(geoJsonFeatureCollection.bbox === undefined);
-  Test.consoleUltra(geoJsonFeatureCollection, "GeoJson.FeatureCollection");
+  assert.ok(geoJsonFeatureCollection.bbox === undefined);
+  Test.consoleUltra(geoJsonFeatureCollection);
 }
 {
   const geoJsonFeatureCollection = new GeoJson.FeatureCollection([
@@ -195,16 +257,28 @@ const Test = {
   geoJsonFeatureCollection.boundingbox.south = 51.04571;
 
   const json = Test.toFromJson(geoJsonFeatureCollection);
-  Test.assert(json.type === "FeatureCollection");
-  Test.assert(json.bbox !== undefined);
-  Test.assert(json.bbox[0] === geoJsonFeatureCollection.boundingbox.west, "West");
-  Test.assert(json.bbox[1] === geoJsonFeatureCollection.boundingbox.south, "South");
-  Test.assert(json.bbox[2] === geoJsonFeatureCollection.boundingbox.east, "East");
-  Test.assert(json.bbox[3] === geoJsonFeatureCollection.boundingbox.north, "North");
 
-  Test.consoleUltra(json, "GeoJson.FeatureCollection");
-  console.log(JSON.stringify(geoJsonFeatureCollection));
+  assert.strictEqual(json.type, "FeatureCollection");
+  assert.strictEqual(json.bbox[0], geoJsonFeatureCollection.boundingbox.west, "Bounding Box West");
+  assert.strictEqual(json.bbox[1], geoJsonFeatureCollection.boundingbox.south, "Bounding Box South");
+  assert.strictEqual(json.bbox[2], geoJsonFeatureCollection.boundingbox.east, "Bounding Box East");
+  assert.strictEqual(json.bbox[3], geoJsonFeatureCollection.boundingbox.north, "Bounding Box North");
+  assert.strictEqual(json.type, "FeatureCollection", "FeatureCollection");
+  assert.strictEqual(json.features.length, 2, "Two Features exist");
+  assert.strictEqual(json.features[0].type, "Feature", "Feature.type");
+  assert.strictEqual(json.features[0].properties.title, "Sailing boat", "Feature.properties.title");
+  assert.strictEqual(json.features[0].properties["marker-symbol"], "harbor", "Feature.properties['marker-symbol']");
+  assert.strictEqual(json.features[0].geometry.type, "Point", "Feature.geometry.type");
+
+  assert.strictEqual(json.features[1].type, "Feature", "Feature.type");
+  assert.strictEqual(json.features[1].properties.title, "Lighthouse", "Feature.properties.title");
+  assert.strictEqual(json.features[1].geometry.type, "Point", "Feature.geometry.type");
+  assert.strictEqual(json.features[1].properties["marker-symbol"], "lighthouse", "Feature.properties['marker-symbol']");
+
+  Test.consoleUltra(json);
+  Test.consoleUltra(JSON.stringify(geoJsonFeatureCollection));
 }
+console.groupEnd();
 
 /**
  * `GeometryCollection`

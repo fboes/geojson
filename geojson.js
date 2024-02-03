@@ -304,13 +304,13 @@ export class Feature extends GeoJSON {
    */
   properties = {};
 
-  /** @type {String|Number|null} */
+  /** @type {?String|Number} */
   id = null;
 
   /**
    * @param {?Geometry|GeometryCollection} geometry
    * @param {Object.<string, any>} properties
-   * @param {?String} id
+   * @param {?String|Number} id
    */
   constructor(geometry = null, properties = {}, id = null) {
     super();
@@ -380,10 +380,11 @@ export class Feature extends GeoJSON {
    * @param {Number} latitude
    * @param {?Number} elevation
    * @param {?String} title
+   * @param {?String|Number} id
    * @returns
    */
-  static createWithPoint(longitude, latitude, elevation = null, title = null) {
-    const feature = new Feature(new Point(longitude, latitude, elevation));
+  static createWithPoint(longitude, latitude, elevation = null, title = null, id = null) {
+    const feature = new Feature(new Point(longitude, latitude, elevation), {}, id);
     feature.title = title;
 
     return feature;
