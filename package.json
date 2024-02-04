@@ -1,6 +1,6 @@
 {
   "name": "@fboes/geojson",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This dual-purpose library creates GeoJSON according to RFC 7946 in NodeJS as well as directly in your browser.",
   "main": "geojson.js",
   "scripts": {
@@ -12,7 +12,9 @@
   "author": "Frank Boës <info@3960.org> (https://3960.org/)",
   "license": "MIT",
   "type": "module",
-  "keywords": ["geojson"],
+  "keywords": [
+    "geojson"
+  ],
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
