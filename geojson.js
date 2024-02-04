@@ -109,18 +109,18 @@ class Geometry extends GeoJSON {
  */
 export class Point extends Geometry {
   /**
-   * @type {Number} longitude easting, using the World Geodetic
+   * @type {Number} #longitude easting, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -180..180
    */
-  longitude;
+  #longitude;
 
   /**
-   * @type {Number} latitude northing, using the World Geodetic
+   * @type {Number} #latitude northing, using the World Geodetic
    *     System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *     of decimal degrees; -90..90
    */
-  latitude;
+  #latitude;
 
   /**
    * @type {?Number} elevation the height in meters above or below the WGS
@@ -140,13 +140,45 @@ export class Point extends Geometry {
    */
   constructor(longitude, latitude, elevation = null) {
     super();
-    if (isNaN(longitude) || isNaN(latitude)) {
-      throw new Error("Missing longitude or latitude");
-    }
-
     this.longitude = longitude;
     this.latitude = latitude;
     this.elevation = elevation;
+  }
+
+  /**
+   * @param {Number} longitude, see {@link #longitude}
+   * @throws {RangeError}
+   */
+  set longitude(longitude) {
+    if (longitude < -180 || longitude > 180) {
+      throw RangeError("Longitude needs to be -180..180");
+    }
+    this.#longitude = longitude;
+  }
+
+  /**
+   * @returns {Number} see {@link #longitude}
+   */
+  get longitude() {
+    return this.#longitude;
+  }
+
+  /**
+   * @param {Number} latitude, see {@link #latitude}
+   * @throws {RangeError}
+   */
+  set latitude(latitude) {
+    if (latitude < -90 || latitude > 90) {
+      throw RangeError("Latitude needs to be -90..90");
+    }
+    this.#latitude = latitude;
+  }
+
+  /**
+   * @returns {Number} see {@link #latitude}
+   */
+  get latitude() {
+    return this.#latitude;
   }
 
   /**

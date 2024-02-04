@@ -1,6 +1,7 @@
 // @ts-check
 
 import * as GeoJson from "./geojson.js";
+import { strict as assert } from "node:assert";
 
 const Test = {
   console: false,
@@ -15,33 +16,6 @@ const Test = {
     }
     console.dir(object, { depth: null });
   },
-};
-
-const assert = {
-  /**
-   * Check if `actual` strictly equals `b`. Throw Error on error.
-   * @param {any} actual
-   * @param {any} expected
-   * @param {String} message
-   */
-  strictEqual(actual, expected, message = '') {
-    message === '' || (message += " | ");
-    message += message = `'${actual}' equals '${expected}'`;
-
-    assert.ok(actual == expected, message)
-  },
-
-  /**
-   * Check if `assertion` is `true`. Throw Error on error.
-   * @param {Boolean} assertion
-   * @param {String} message
-   */
-  ok(assertion, message = 'Assertion') {
-    console.log((assertion ? "✅" : "💥") + " " + message);
-    if (!assertion) {
-      throw new Error(`"${message}" failed`);
-    }
-  }
 };
 
 // -----------------------------------------------------------------------------
@@ -65,6 +39,24 @@ console.group("GeoJson.Point");
   assert.strictEqual(geoJsonPoint.coordinates[0], 1, "Coordinates match");
   assert.strictEqual(geoJsonPoint.coordinates[1], 2, "Coordinates match");
   assert.ok(geoJsonPoint.coordinates[2] === undefined, "No elevation");
+}
+{
+  const geoJsonPoint = Test.toFromJson(new GeoJson.Point(180, 90));
+  assert.strictEqual(geoJsonPoint.type, "Point", "Type matches");
+}
+{
+  const geoJsonPoint = Test.toFromJson(new GeoJson.Point(-180, -90));
+  assert.strictEqual(geoJsonPoint.type, "Point", "Type matches");
+}
+{
+  assert.throws(() => {
+    Test.toFromJson(new GeoJson.Point(-181, -91));
+  });
+}
+{
+  assert.throws(() => {
+    Test.toFromJson(new GeoJson.Point(181, 91));
+  });
 }
 console.groupEnd();
 
@@ -275,10 +267,29 @@ console.group("GeoJson.FeatureCollection");
   assert.strictEqual(json.features[1].geometry.type, "Point", "Feature.geometry.type");
   assert.strictEqual(json.features[1].properties["marker-symbol"], "lighthouse", "Feature.properties['marker-symbol']");
 
+  assert.deepStrictEqual(json, {
+    type: "FeatureCollection",
+    bbox: [6.5664576, 51.04571, 1.53946, 58.109285],
+    features: [
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [1.53946, 51.04571] },
+        properties: { title: "Sailing boat", "marker-symbol": "harbor" },
+      },
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [6.5664576, 58.109285] },
+        properties: { title: "Lighthouse", "marker-symbol": "lighthouse" },
+      },
+    ],
+  });
+
   Test.consoleUltra(json);
   Test.consoleUltra(JSON.stringify(geoJsonFeatureCollection));
 }
 console.groupEnd();
+
+console.log("✅ Tests successful");
 
 /**
  * `GeometryCollection`
