@@ -2,7 +2,7 @@
   "name": "@fboes/geojson",
   "version": "1.0.1",
   "description": "This dual-purpose library creates GeoJSON according to RFC 7946 in NodeJS as well as directly in your browser.",
-  "main": "geojson.js",
+  "exports": "./geojson.js",
   "scripts": {
     "prettier": "npx prettier --cache --write .",
     "eslint": "npx eslint *.js --fix",

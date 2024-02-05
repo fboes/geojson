@@ -42,10 +42,10 @@ Loading the library prior to use:
 
 ```javascript
 // 1. NodeJS - NPM installation
-import * as GeoJson from "geojson";
+import GeoJson from "geojson";
 
 // 2. Local installation and/or browser usage
-import * as GeoJson from "geojson.js";
+import GeoJson from "geojson.js";
 ```
 
 Now you are set to build your GeoJson:

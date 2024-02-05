@@ -1,6 +1,6 @@
 // @ts-check
 
-import * as GeoJson from "./geojson.js";
+import GeoJson from "./geojson.js";
 import { strict as assert } from "node:assert";
 
 const Test = {
