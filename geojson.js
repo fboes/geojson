@@ -7,9 +7,7 @@
  * precisely in that order and using decimal numbers.
  *
  * Altitude or elevation MAY be included as an optional third element.
- *
- * @typedef {Object} Position
- * @type {[Number, Number, Number]|[Number, Number]}
+ * @typedef {[number, number, number] | [number, number]} Position
  */
 
 /**
@@ -22,9 +20,7 @@
  * contained geometries, with all axes of the most southwesterly point
  * followed by all axes of the more northeasterly point.  The axes order
  * of a bbox follows the axes order of geometries.
- *
- * @typedef {Object} BoundingBox
- * @type {[Number, Number, Number, Number]|[Number, Number, Number, Number, Number, Number]}
+ * @typedef {[number, number, number, number] | [number, number, number, number, number, number]} BoundingBox
  */
 
 /**
@@ -33,7 +29,7 @@
  */
 class GeoJSON {
   /**
-   * @type {{west:?Number,south:?Number,low:?Number,east:?Number,north:?Number,high:?Number}}
+   * @type {{west: ?number, south: ?number, low: ?number, east: ?number, north: ?number, high: ?number}}
    *
    * A GeoJSON object MAY have a member named "bbox" to include
    * information on the coordinate range for its Geometries, Features, or
@@ -49,7 +45,7 @@ class GeoJSON {
   };
 
   /**
-   * @returns {?BoundingBox}
+   * @returns {?BoundingBox} if set
    */
   get bbox() {
     if (
@@ -91,7 +87,7 @@ class GeoJSON {
  */
 class Geometry extends GeoJSON {
   /**
-   * @returns {?Position|Position[]|Position[][]}
+   * @returns {?Position|Position[]|Position[][]} compiled
    */
   get coordinates() {
     return null;
@@ -109,46 +105,46 @@ class Geometry extends GeoJSON {
  */
 export class Point extends Geometry {
   /**
-   * @type {Number} easting, using the World Geodetic
+   * @type {number} easting, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -180..180
    */
   #longitude;
 
   /**
-   * @type {Number} northing, using the World Geodetic
+   * @type {number} northing, using the World Geodetic
    *     System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *     of decimal degrees; -90..90
    */
   #latitude;
 
   /**
-   * @type {?Number} elevation the height in meters above or below the WGS
+   * @type {?number} elevation the height in meters above or below the WGS
    *   84 reference ellipsoid
    */
   elevation;
 
   /**
-   * @param {Number} longitude easting, using the World Geodetic
+   * @param {number} longitude easting, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -180..180
-   * @param {Number} latitude northing, using the World Geodetic
+   * @param {number} latitude northing, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -90..90
-   * @param {?Number} elevation the height in meters above or below the WGS
+   * @param {?number} elevation the height in meters above or below the WGS
    *    84 reference ellipsoid
    */
   constructor(longitude, latitude, elevation = null) {
     super();
     /**
-     * @type {Number} longitude easting, using the World Geodetic
+     * @type {number} longitude easting, using the World Geodetic
      *     System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
      *     of decimal degrees; -180..180
      */
     this.longitude = longitude;
 
     /**
-     * @type {Number} latitude northing, using the World Geodetic
+     * @type {number} latitude northing, using the World Geodetic
      *     System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
      *     of decimal degrees; -90..90
      */
@@ -179,7 +175,7 @@ export class Point extends Geometry {
   }
 
   /**
-   * @returns {Position}
+   * @returns {Position} to add
    */
   get coordinates() {
     return this.elevation === null || isNaN(this.elevation)
@@ -206,7 +202,7 @@ export class MultiPoint extends Geometry {
 
   /**
    *
-   * @param {Point[]} points
+   * @param {Point[]} points to add
    */
   constructor(points) {
     super();
@@ -214,7 +210,7 @@ export class MultiPoint extends Geometry {
   }
 
   /**
-   * @returns {Position[]}
+   * @returns {Position[]} compiled
    */
   get coordinates() {
     return this.points.map((p) => p.coordinates);
@@ -241,7 +237,7 @@ export class MultiLineString extends Geometry {
 
   /**
    *
-   * @param {LineString[]} lineStrings
+   * @param {LineString[]} lineStrings to add
    */
   constructor(lineStrings) {
     super();
@@ -249,7 +245,7 @@ export class MultiLineString extends Geometry {
   }
 
   /**
-   * @returns {Position[][]}
+   * @returns {Position[][]} compiled
    */
   get coordinates() {
     return this.lineStrings.map((p) => p.coordinates);
@@ -287,7 +283,7 @@ export class MultiPolygon extends Geometry {
 
   /**
    *
-   * @param {Polygon[]} polygons
+   * @param {Polygon[]} polygons to add
    */
   constructor(polygons) {
     super();
@@ -295,7 +291,7 @@ export class MultiPolygon extends Geometry {
   }
 
   /**
-   * @returns {Position[][]}
+   * @returns {Position[][]} compiled
    */
   get coordinates() {
     return this.polygons.map((p) => p.coordinates);
@@ -312,7 +308,7 @@ export class GeometryCollection extends GeoJSON {
 
   /**
    *
-   * @param {Geometry[]} geometries
+   * @param {Geometry[]} geometries to add
    */
   constructor(geometries) {
     super();
@@ -328,18 +324,18 @@ export class Feature extends GeoJSON {
   geometry = null;
 
   /**
-   * @type {Object.<string, any>}
+   * @type {{[key: string]: any}}
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
   properties = {};
 
-  /** @type {?String|Number} */
+  /** @type {?string | number} */
   id = null;
 
   /**
-   * @param {?Geometry|GeometryCollection} geometry
-   * @param {Object.<string, any>} properties
-   * @param {?String|Number} id
+   * @param {?Geometry|GeometryCollection} geometry mandatory
+   * @param {{[key: string]: any}} properties optional
+   * @param {?string | number} id optional
    */
   constructor(geometry = null, properties = {}, id = null) {
     super();
@@ -350,8 +346,7 @@ export class Feature extends GeoJSON {
 
   /**
    * Set `this.properties[key]`.
-   *
-   * @param {String} key Key of `this.properties[key]`. For `simplestyle-spec`:
+   * @param {string} key Key of `this.properties[key]`. For `simplestyle-spec`:
    *
    *  | Key             | Value                     |
    *  | --------------- | ------------------------- |
@@ -361,7 +356,7 @@ export class Feature extends GeoJSON {
    *  | `marker-color`  | hex color                 |
    *  | `stroke`        | hex color for LineStrings |
    *  | `fill`          | hex color for Polygons    |
-   * @param {?String} value if this is `null`, `this.properties[key]` will be deleted.
+   * @param {?string} value if this is `null`, `this.properties[key]` will be deleted.
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
   setProperty(key, value) {
@@ -374,8 +369,7 @@ export class Feature extends GeoJSON {
 
   /**
    * Set `this.properties.title`
-   *
-   * @param {?String} title
+   * @param {?string} title to add to properties
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
   set title(title) {
@@ -384,8 +378,7 @@ export class Feature extends GeoJSON {
 
   /**
    * Set `this.properties.description`
-   *
-   * @param {?String} description
+   * @param {?string} description to add to properties
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
   set description(description) {
@@ -404,18 +397,17 @@ export class Feature extends GeoJSON {
 
   /**
    * Create a `Feature` which has a `Point` geometry as a shortcut.
-   *
-   * @param {Number} longitude easting, using the World Geodetic
+   * @param {number} longitude easting, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -180..180
-   * @param {Number} latitude northing, using the World Geodetic
+   * @param {number} latitude northing, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -90..90
-   * @param {?Number} elevation the height in meters above or below the WGS
+   * @param {?number} elevation the height in meters above or below the WGS
    *    84 reference ellipsoid
-   * @param {?String} title will set `this.properties.title`
-   * @param {?String|Number} id will set `this.id`
-   * @returns
+   * @param {?string} title will set `this.properties.title`
+   * @param {?string | number} id will set `this.id`
+   * @returns {Feature} build from the given parameters
    */
   static createWithPoint(longitude, latitude, elevation = null, title = null, id = null) {
     const feature = new Feature(new Point(longitude, latitude, elevation), {}, id);
@@ -433,7 +425,7 @@ export class FeatureCollection extends GeoJSON {
   features = [];
 
   /**
-   * @param {Feature[]} features
+   * @param {Feature[]} features to start with
    */
   constructor(features = []) {
     super();
@@ -441,7 +433,7 @@ export class FeatureCollection extends GeoJSON {
   }
 
   /**
-   * @param {Feature} feature
+   * @param {Feature} feature to add
    */
   addFeature(feature) {
     this.features.push(feature);

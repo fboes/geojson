@@ -5,20 +5,25 @@
   "exports": "./geojson.js",
   "scripts": {
     "prettier": "npx prettier --cache --write .",
-    "eslint": "npx eslint *.js --fix",
-    "build": "npm run prettier && npm run eslint",
+    "eslint": "npx eslint *.js **/*.js --fix",
+    "types": "npx -p typescript tsc geojson.js --target es2021 --declaration --allowJs --emitDeclarationOnly --outDir .",
+    "build": "npm run prettier && npm run eslint && npm run types",
     "test": "node geojson-test.js"
   },
   "author": "Frank Boës <info@3960.org> (https://3960.org/)",
   "license": "MIT",
   "type": "module",
   "keywords": [
-    "geojson"
+    "geojson",
+    "nodejs",
+    "browser"
   ],
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "prettier": "3.2.4"
+    "eslint-plugin-jsdoc": "^48.1.0",
+    "prettier": "3.2.4",
+    "typescript": "^5.3.3"
   },
   "repository": {
     "type": "git",
