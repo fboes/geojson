@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 1.2.1
+
+- Fixed integration of TypeScript type definitions
+
+## 1.2.0
 
 - Added `CHANGELOG.md`
 - Improved JSDoc

@@ -3,11 +3,12 @@
   "version": "1.2.0",
   "description": "This dual-purpose library creates GeoJSON according to RFC 7946 in NodeJS as well as directly in your browser.",
   "exports": "./geojson.js",
+  "types": "./geojson.t.ds",
   "scripts": {
     "prettier": "npx prettier --cache --write .",
     "eslint": "npx eslint *.js **/*.js --fix",
     "types": "npx -p typescript tsc geojson.js --target es2021 --declaration --allowJs --emitDeclarationOnly --outDir .",
-    "build": "npm run prettier && npm run eslint && npm run types",
+    "build": "npm run eslint && npm run types && npm run prettier",
     "test": "node geojson-test.js"
   },
   "author": "Frank Boës <info@3960.org> (https://3960.org/)",
