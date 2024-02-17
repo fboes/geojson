@@ -4,6 +4,7 @@
 
 - Added `CHANGELOG.md`
 - Improved JSDoc
+- Added TypeScript definition file
 
 ## 1.1.0
 
