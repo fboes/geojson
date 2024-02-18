@@ -11,6 +11,9 @@
     "sourceMap": false,
     "newLine": "LF",
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "declarationMap": true,
+    "declaration": true,
+    "declarationDir": "./types"
   }
 }
