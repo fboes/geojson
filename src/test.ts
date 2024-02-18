@@ -1,16 +1,16 @@
-// @ts-check
-
-import GeoJson from "./geojson.js";
+import GeoJson from "./index.js";
 import { strict as assert } from "node:assert";
 
 const Test = {
   console: false,
 
-  toFromJson: (object) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toFromJson: (object: any) => {
     return JSON.parse(JSON.stringify(object));
   },
 
-  consoleUltra: (object) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  consoleUltra: (object: any) => {
     if (!Test.console) {
       return;
     }

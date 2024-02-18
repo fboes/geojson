@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * A position is the fundamental geometry construct.
  *
@@ -7,8 +5,8 @@
  * precisely in that order and using decimal numbers.
  *
  * Altitude or elevation MAY be included as an optional third element.
- * @typedef {[number, number, number] | [number, number]} Position
  */
+type Position = [number, number, number] | [number, number];
 
 /**
  * A GeoJSON object MAY have a member named "bbox" to include
@@ -20,8 +18,22 @@
  * contained geometries, with all axes of the most southwesterly point
  * followed by all axes of the more northeasterly point.  The axes order
  * of a bbox follows the axes order of geometries.
- * @typedef {[number, number, number, number] | [number, number, number, number, number, number]} BoundingBox
  */
+type BoundingBox = [number, number, number, number] | [number, number, number, number, number, number];
+
+type AbstractBoundingBox = {
+  west: number | null;
+  south: number | null;
+  low: number | null;
+  east: number | null;
+  north: number | null;
+  high: number | null;
+};
+
+type GeoJsonJson = {
+  type: string;
+  bbox?: BoundingBox;
+};
 
 /**
  * A GeoJSON object represents a Geometry, Feature, or collection of
@@ -29,13 +41,13 @@
  */
 class GeoJSON {
   /**
-   * @type {{west: ?number, south: ?number, low: ?number, east: ?number, north: ?number, high: ?number}}
+   *
    *
    * A GeoJSON object MAY have a member named "bbox" to include
    * information on the coordinate range for its Geometries, Features, or
    * FeatureCollections
    */
-  boundingbox = {
+  boundingbox: AbstractBoundingBox = {
     west: null,
     south: null,
     low: null,
@@ -44,10 +56,7 @@ class GeoJSON {
     high: null,
   };
 
-  /**
-   * @returns {?BoundingBox} if set
-   */
-  get bbox() {
+  get bbox(): BoundingBox | null {
     if (
       this.boundingbox.west === null ||
       this.boundingbox.south === null ||
@@ -69,8 +78,8 @@ class GeoJSON {
         ];
   }
 
-  toJSON() {
-    const json = {
+  toJSON(): GeoJsonJson {
+    const json: GeoJsonJson = {
       type: this.constructor.name,
     };
 
@@ -81,22 +90,24 @@ class GeoJSON {
   }
 }
 
+type GeometryJson = GeoJsonJson & {
+  coordinates: Position | Position[] | Position[][];
+};
+
 /**
  * A Geometry object represents points, curves, and surfaces in
  * coordinate space.
  */
 class Geometry extends GeoJSON {
-  /**
-   * @returns {?Position|Position[]|Position[][]} compiled
-   */
-  get coordinates() {
-    return null;
+  get coordinates(): Position | Position[] | Position[][] {
+    return [0, 0];
   }
 
-  toJSON() {
-    const json = super.toJSON();
-    json.coordinates = this.coordinates;
-    return json;
+  toJSON(): GeometryJson {
+    return {
+      ...super.toJSON(),
+      coordinates: this.coordinates,
+    };
   }
 }
 
@@ -105,24 +116,24 @@ class Geometry extends GeoJSON {
  */
 export class Point extends Geometry {
   /**
-   * @type {number} easting, using the World Geodetic
+   *easting, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -180..180
    */
-  #longitude;
+  protected _longitude!: number;
 
   /**
-   * @type {number} northing, using the World Geodetic
+   * northing, using the World Geodetic
    *     System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *     of decimal degrees; -90..90
    */
-  #latitude;
+  protected _latitude!: number;
 
   /**
-   * @type {?number} elevation the height in meters above or below the WGS
+   * elevation the height in meters above or below the WGS
    *   84 reference ellipsoid
    */
-  elevation;
+  elevation: number | null = null;
 
   /**
    * @param {number} longitude easting, using the World Geodetic
@@ -131,62 +142,42 @@ export class Point extends Geometry {
    * @param {number} latitude northing, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -90..90
-   * @param {?number} elevation the height in meters above or below the WGS
+   * @param {number|null} elevation the height in meters above or below the WGS
    *    84 reference ellipsoid
    */
-  constructor(longitude, latitude, elevation = null) {
+  constructor(longitude: number, latitude: number, elevation: number | null = null) {
     super();
-    /**
-     * @type {number} longitude easting, using the World Geodetic
-     *     System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
-     *     of decimal degrees; -180..180
-     */
     this.longitude = longitude;
-
-    /**
-     * @type {number} latitude northing, using the World Geodetic
-     *     System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
-     *     of decimal degrees; -90..90
-     */
     this.latitude = latitude;
     this.elevation = elevation;
   }
 
-  set longitude(longitude) {
+  set longitude(longitude: number) {
     if (longitude < -180 || longitude > 180) {
       throw RangeError("Longitude needs to be -180..180");
     }
-    this.#longitude = longitude;
+    this._longitude = longitude;
   }
 
-  get longitude() {
-    return this.#longitude;
+  get longitude(): number {
+    return this._longitude;
   }
 
-  set latitude(latitude) {
+  set latitude(latitude: number) {
     if (latitude < -90 || latitude > 90) {
       throw RangeError("Latitude needs to be -90..90");
     }
-    this.#latitude = latitude;
+    this._latitude = latitude;
   }
 
-  get latitude() {
-    return this.#latitude;
+  get latitude(): number {
+    return this._latitude;
   }
 
-  /**
-   * @returns {Position} to add
-   */
-  get coordinates() {
+  get coordinates(): Position {
     return this.elevation === null || isNaN(this.elevation)
       ? [this.longitude, this.latitude]
       : [this.longitude, this.latitude, this.elevation];
-  }
-
-  toJSON() {
-    const json = super.toJSON();
-    json.coordinates = this.coordinates;
-    return json;
   }
 }
 
@@ -195,24 +186,14 @@ export class Point extends Geometry {
  *  positions.
  */
 export class MultiPoint extends Geometry {
-  /**
-   * @type {Point[]}
-   */
-  points = [];
+  points: Point[] = [];
 
-  /**
-   *
-   * @param {Point[]} points to add
-   */
-  constructor(points) {
+  constructor(points: Point[]) {
     super();
     this.points = points;
   }
 
-  /**
-   * @returns {Position[]} compiled
-   */
-  get coordinates() {
+  get coordinates(): Position[] {
     return this.points.map((p) => p.coordinates);
   }
 }
@@ -221,40 +202,22 @@ export class MultiPoint extends Geometry {
  * For type "LineString", the "coordinates" member is an array of two or
  * more positions.
  */
-export class LineString extends MultiPoint {
-  type = "LineString";
-}
+export class LineString extends MultiPoint {}
 
 /**
  * For type "MultiLineString", the "coordinates" member is an array of
  * LineString coordinate arrays.
  */
 export class MultiLineString extends Geometry {
-  /**
-   * @type {LineString[]}
-   */
-  lineStrings = [];
+  lineStrings: LineString[] = [];
 
-  /**
-   *
-   * @param {LineString[]} lineStrings to add
-   */
-  constructor(lineStrings) {
+  constructor(lineStrings: LineString[]) {
     super();
     this.lineStrings = lineStrings;
   }
 
-  /**
-   * @returns {Position[][]} compiled
-   */
-  get coordinates() {
+  get coordinates(): Position[][] {
     return this.lineStrings.map((p) => p.coordinates);
-  }
-
-  toJSON() {
-    const json = super.toJSON();
-    json.coordinates = this.coordinates;
-    return json;
   }
 }
 
@@ -269,31 +232,21 @@ export class MultiLineString extends Geometry {
  * area it bounds, i.e., exterior rings are counterclockwise, and
  * holes are clockwise.
  */
-export class Polygon extends MultiPoint {
-  type = "Polygon";
-}
+export class Polygon extends MultiPoint {}
 
 /**
  * For type "MultiPolygon", the "coordinates" member is an array of
  * Polygon coordinate arrays.
  */
 export class MultiPolygon extends Geometry {
-  /** @type {Polygon[]} */
-  polygons;
+  polygons: Polygon[];
 
-  /**
-   *
-   * @param {Polygon[]} polygons to add
-   */
-  constructor(polygons) {
+  constructor(polygons: Polygon[]) {
     super();
     this.polygons = polygons;
   }
 
-  /**
-   * @returns {Position[][]} compiled
-   */
-  get coordinates() {
+  get coordinates(): Position[][] {
     return this.polygons.map((p) => p.coordinates);
   }
 }
@@ -303,41 +256,46 @@ export class MultiPolygon extends Geometry {
  * can be a heterogeneous composition of smaller Geometry objects.
  */
 export class GeometryCollection extends GeoJSON {
-  /** @type {Geometry[]} */
-  geometries;
+  geometries: Geometry[];
 
-  /**
-   *
-   * @param {Geometry[]} geometries to add
-   */
-  constructor(geometries) {
+  constructor(geometries: Geometry[]) {
     super();
     this.geometries = geometries;
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Properties = { [k: string]: any };
+
+type FeatureJson = GeoJsonJson & {
+  geometry: Geometry | GeometryCollection | null;
+  properties?: Properties;
+  id?: string | number;
+};
+
 /**
  * A Feature object represents a spatially bounded thing.
  */
 export class Feature extends GeoJSON {
-  /** @type {?Geometry|GeometryCollection} */
-  geometry = null;
+  geometry: Geometry | GeometryCollection | null = null;
 
   /**
-   * @type {{[key: string]: any}}
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
-  properties = {};
+  properties: Properties = {};
 
-  /** @type {?string | number} */
-  id = null;
+  id: string | number | null = null;
 
   /**
-   * @param {?Geometry|GeometryCollection} geometry mandatory
-   * @param {{[key: string]: any}} properties optional
-   * @param {?string | number} id optional
+   * @param {Geometry | GeometryCollection | null} geometry mandatory
+   * @param {Properties} properties optional
+   * @param {string | number | null} id optional
    */
-  constructor(geometry = null, properties = {}, id = null) {
+  constructor(
+    geometry: Geometry | GeometryCollection | null = null,
+    properties: Properties = {},
+    id: string | number | null = null,
+  ) {
     super();
     this.geometry = geometry;
     this.properties = properties;
@@ -356,10 +314,11 @@ export class Feature extends GeoJSON {
    *  | `marker-color`  | hex color                 |
    *  | `stroke`        | hex color for LineStrings |
    *  | `fill`          | hex color for Polygons    |
-   * @param {?string} value if this is `null`, `this.properties[key]` will be deleted.
+   * @param {any} value if this is `null`, `this.properties[key]` will be deleted.
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
-  setProperty(key, value) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setProperty(key: string, value: any) {
     if (value === null) {
       this.properties[key] && delete this.properties[key];
       return;
@@ -369,27 +328,26 @@ export class Feature extends GeoJSON {
 
   /**
    * Set `this.properties.title`
-   * @param {?string} title to add to properties
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
-  set title(title) {
+  set title(title: string | null) {
     this.setProperty("title", title);
   }
 
   /**
    * Set `this.properties.description`
-   * @param {?string} description to add to properties
    * @see https://github.com/mapbox/simplestyle-spec/blob/master/1.1.0/README.md
    */
-  set description(description) {
+  set description(description: string | null) {
     this.setProperty("description", description);
   }
 
-  toJSON() {
-    const json = super.toJSON();
-
+  toJSON(): FeatureJson {
+    const json: FeatureJson = {
+      ...super.toJSON(),
+      geometry: this.geometry,
+    };
     this.id !== null && (json.id = this.id);
-    json.geometry = this.geometry;
     Object.keys(this.properties).length > 0 && (json.properties = this.properties);
 
     return json;
@@ -403,13 +361,19 @@ export class Feature extends GeoJSON {
    * @param {number} latitude northing, using the World Geodetic
    *    System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units
    *    of decimal degrees; -90..90
-   * @param {?number} elevation the height in meters above or below the WGS
+   * @param {number | null} elevation the height in meters above or below the WGS
    *    84 reference ellipsoid
-   * @param {?string} title will set `this.properties.title`
-   * @param {?string | number} id will set `this.id`
+   * @param {string | null } title will set `this.properties.title`
+   * @param {string | number | null} id will set `this.id`
    * @returns {Feature} build from the given parameters
    */
-  static createWithPoint(longitude, latitude, elevation = null, title = null, id = null) {
+  static createWithPoint(
+    longitude: number,
+    latitude: number,
+    elevation: number | null = null,
+    title: string | null = null,
+    id: string | number | null = null,
+  ): Feature {
     const feature = new Feature(new Point(longitude, latitude, elevation), {}, id);
     feature.title = title;
 
@@ -417,32 +381,30 @@ export class Feature extends GeoJSON {
   }
 }
 
+type FeatureCollectionJson = GeoJsonJson & {
+  features: Feature[];
+};
+
 /**
  * A FeatureCollection contains multiple Feature objects.
  */
 export class FeatureCollection extends GeoJSON {
-  /** @type {Feature[]} */
-  features = [];
+  features: Feature[] = [];
 
-  /**
-   * @param {Feature[]} features to start with
-   */
-  constructor(features = []) {
+  constructor(features: Feature[] = []) {
     super();
     this.features = features;
   }
 
-  /**
-   * @param {Feature} feature to add
-   */
-  addFeature(feature) {
+  addFeature(feature: Feature) {
     this.features.push(feature);
   }
 
-  toJSON() {
-    const json = super.toJSON();
-    json.features = this.features;
-    return json;
+  toJSON(): FeatureCollectionJson {
+    return {
+      ...super.toJSON(),
+      features: this.features,
+    };
   }
 }
 

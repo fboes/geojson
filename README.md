@@ -22,7 +22,7 @@ Why do we need _classes_ to build JSON objects?
 
 ## Installation
 
-Either download the [`geojson.js`](geojson.js) to a sensible location in your web project, or do a NPM installation:
+Either download the [`dist/index.js`](dist/index.js) to a sensible location in your web project, or do a NPM installation:
 
 ```bash
 npm install @fboes/geojson --save
@@ -31,10 +31,10 @@ npm install @fboes/geojson --save
 Instead of a local installation you may also load the library from https://unpkg.com/. Beware: This makes https://unpkg.com/ a dependency of your project and may pose data protection issues.
 
 ```html
-<script type="module" src="https://unpkg.com/@fboes/geojson@latest/geojson.js"></script>
+<script type="module" src="https://unpkg.com/@fboes/geojson@latest/dist/index.js"></script>
 ```
 
-Everything required for the functionality of this library is contained in [`geojson.js`](geojson.js).
+Everything required for the functionality of this library is contained in [`dist/index.js`](dist/index.js).
 
 ## Usage
 
@@ -45,10 +45,10 @@ Loading the library prior to use:
 import GeoJson from "geojson";
 
 // 2. Local installation and/or browser usage
-import GeoJson from "geojson.js";
+import GeoJson from "dist/index.js";
 ```
 
-Now you are set to build your GeoJson:
+Now you are set to build your GeoJSON:
 
 ```javascript
 const featureCollection = new GeoJson.FeatureCollection([
@@ -65,7 +65,7 @@ const featureCollection = new GeoJson.FeatureCollection([
 console.log(JSON.stringify(featureCollection));
 ```
 
-which yields GeoJson:
+which yields GeoJSON:
 
 ```json
 {

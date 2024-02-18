@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+- Switched entirely to TypeScript
+
 ## 1.2.1
 
 - Fixed integration of TypeScript type definitions
