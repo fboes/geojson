@@ -15,7 +15,7 @@ type Position = [number, number, number] | [number, number];
  * The value of the bbox member MUST be an array of
  * length 2*n where n is the number of dimensions represented in the
  * contained geometries, with all axes of the most southwesterly point
- * followed by all axes of the more northeasterly point.  The axes order
+ * followed by all axes of the more northeasterly point. The axes order
  * of a bbox follows the axes order of geometries.
  */
 type BoundingBox = [number, number, number, number] | [number, number, number, number, number, number];
@@ -95,6 +95,13 @@ export declare class Point extends Geometry {
     set latitude(latitude: number);
     get latitude(): number;
     get coordinates(): Position;
+    /**
+     *
+     * @param {Point} otherPoint to get bearing to
+     * @returns {number} in Nautical miles
+     */
+    getVectorTo(otherPoint: Point): Vector;
+    getPointBy(vector: Vector): Point;
 }
 /**
  * For type "MultiPoint", the "coordinates" member is an array of
@@ -229,6 +236,19 @@ export declare class FeatureCollection extends GeoJSON {
     addFeature(feature: Feature): void;
     toJSON(): FeatureCollectionJson;
 }
+export declare class Vector {
+    meters: number;
+    protected _bearing: number;
+    constructor(meters: number, bearing: number);
+    /**
+     * @returns {number} 0..360
+     */
+    get bearing(): number;
+    /**
+     * @param {number} bearing 0..360
+     */
+    set bearing(bearing: number);
+}
 declare const _default: {
     Point: typeof Point;
     MultiPoint: typeof MultiPoint;
@@ -239,6 +259,7 @@ declare const _default: {
     GeometryCollection: typeof GeometryCollection;
     Feature: typeof Feature;
     FeatureCollection: typeof FeatureCollection;
+    Vector: typeof Vector;
 };
 export default _default;
 //# sourceMappingURL=index.d.ts.map

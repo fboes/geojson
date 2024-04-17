@@ -289,6 +289,22 @@ console.group("GeoJson.FeatureCollection");
 }
 console.groupEnd();
 
+// -----------------------------------------------------------------------------
+console.group("GeoJson.Vector");
+{
+  const lonLat = new GeoJson.Point(-80.379414, 25.489981);
+  const lonLat2 = new GeoJson.Point(-80.279153, 25.320653);
+  const vector = lonLat.getVectorTo(lonLat2);
+
+  assert.strictEqual("152", vector.bearing.toPrecision(3));
+  assert.strictEqual(21352, Math.round(vector.meters));
+
+  const lonLat3 = lonLat.getPointBy(vector);
+  assert.strictEqual(lonLat2.longitude.toPrecision(5), lonLat3.longitude.toPrecision(5));
+  assert.strictEqual(lonLat2.latitude.toPrecision(5), lonLat3.latitude.toPrecision(5));
+}
+console.groupEnd();
+
 console.log("✅ Tests successful");
 
 /**

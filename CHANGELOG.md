@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+- Added method to calculate new Point from Vector
+- Added method to calculate new Vector from Point
+
 ## 1.3.1
 
 - Exporting TypeScript types
