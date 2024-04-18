@@ -1,6 +1,6 @@
 {
   "name": "@fboes/geojson",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "This dual-purpose library creates GeoJSON according to RFC 7946 in NodeJS as well as directly in your browser.",
   "exports": "./dist/index.js",
   "types": "./types/index.d.ts",
