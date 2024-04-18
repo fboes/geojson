@@ -334,7 +334,7 @@ export class Vector {
      * @param {number} bearing 0..360
      */
     set bearing(bearing) {
-        this._bearing = bearing % 360;
+        this._bearing = (bearing + 360) % 360;
     }
 }
 export default {
