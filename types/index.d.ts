@@ -98,9 +98,14 @@ export declare class Point extends Geometry {
   /**
    *
    * @param {Point} otherPoint to get bearing to
-   * @returns {number} in Nautical miles
+   * @returns {Vector} from `this` to `otherPoint`
    */
   getVectorTo(otherPoint: Point): Vector;
+  /**
+   *
+   * @param {Vector} vector from `this` to result.
+   * @returns {Point} `this` moved by `vector`
+   */
   getPointBy(vector: Vector): Point;
 }
 /**
@@ -240,16 +245,24 @@ export declare class FeatureCollection extends GeoJSON {
   addFeature(feature: Feature): void;
   toJSON(): FeatureCollectionJson;
 }
+/**
+ * Distance and bearing between two `Point`
+ */
 export declare class Vector {
   meters: number;
   protected _bearing: number;
+  /**
+   *
+   * @param {number} meters distance between `Point` A & B
+   * @param {number} bearing from `Point` A to B. 0..360
+   */
   constructor(meters: number, bearing: number);
   /**
-   * @returns {number} 0..360
+   * @returns {number} from `Point` A to B. 0..360
    */
   get bearing(): number;
   /**
-   * @param {number} bearing 0..360
+   * @param {number} bearing from `Point` A to B. 0..360
    */
   set bearing(bearing: number);
 }

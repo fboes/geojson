@@ -113,7 +113,7 @@ export class Point extends Geometry {
     /**
      *
      * @param {Point} otherPoint to get bearing to
-     * @returns {number} in Nautical miles
+     * @returns {Vector} from `this` to `otherPoint`
      */
     getVectorTo(otherPoint) {
         const lat1 = (this.latitude / 180) * Math.PI;
@@ -131,6 +131,11 @@ export class Point extends Geometry {
         const meters = 6371000 * c;
         return new Vector(meters, bearing);
     }
+    /**
+     *
+     * @param {Vector} vector from `this` to result.
+     * @returns {Point} `this` moved by `vector`
+     */
     getPointBy(vector) {
         const d = vector.meters;
         const brng = (((vector.bearing + 360) % 360) / 180) * Math.PI;
@@ -319,19 +324,27 @@ export class FeatureCollection extends GeoJSON {
         };
     }
 }
+/**
+ * Distance and bearing between two `Point`
+ */
 export class Vector {
+    /**
+     *
+     * @param {number} meters distance between `Point` A & B
+     * @param {number} bearing from `Point` A to B. 0..360
+     */
     constructor(meters, bearing) {
         this.meters = meters;
         this.bearing = bearing;
     }
     /**
-     * @returns {number} 0..360
+     * @returns {number} from `Point` A to B. 0..360
      */
     get bearing() {
         return this._bearing;
     }
     /**
-     * @param {number} bearing 0..360
+     * @param {number} bearing from `Point` A to B. 0..360
      */
     set bearing(bearing) {
         this._bearing = (bearing + 360) % 360;
