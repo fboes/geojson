@@ -1,0 +1,1 @@
+{"version":3,"file":"GeometryCollection.d.ts","sourceRoot":"","sources":["../../src/dto/GeometryCollection.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,cAAc,CAAC;AACvC,OAAO,EAAE,QAAQ,EAAE,MAAM,eAAe,CAAC;AAEzC;;;GAGG;AACH,qBAAa,kBAAmB,SAAQ,OAAO;IAC7C,UAAU,EAAE,QAAQ,EAAE,CAAC;gBAEX,UAAU,EAAE,QAAQ,EAAE;CAInC"}

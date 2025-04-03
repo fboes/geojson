@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0
+
+- Internal restructuring, changed exports
+
 ## 1.4.1
 
 - Improving TypeScript types import

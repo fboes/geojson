@@ -1,4 +1,4 @@
-import GeoJson from "./index.js";
+import * as GeoJson from "./index.js";
 import { strict as assert } from "node:assert";
 const Test = {
     console: false,
