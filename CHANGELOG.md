@@ -2,11 +2,11 @@
 
 ## 2.0.0
 
-- Internal restructuring, changed exports
+- Restructured internals and changed exports
 
 ## 1.4.1
 
-- Improving TypeScript types import
+- Improved TypeScript types import
 
 ## 1.4.0
 
@@ -15,7 +15,7 @@
 
 ## 1.3.1
 
-- Exporting TypeScript types
+- Exported TypeScript types
 
 ## 1.3.0
 
@@ -42,4 +42,4 @@
 
 ## 1.0.0
 
-- Initial commit
+- Initial release
