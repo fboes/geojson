@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Changed testing to standard Node.js testing suite
+
 ## 2.0.0
 
 - Restructured internals and changed exports

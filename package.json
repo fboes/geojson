@@ -5,12 +5,14 @@
   "types": "./types/index.d.ts",
   "main": "./dist/index.js",
   "scripts": {
+    "test": "node --test 'dist/**/*.test.js'",
+    "test:coverage": "node --test --experimental-test-coverage 'dist/**/*.test.js'",
+    "test:watch": "node --test --watch 'dist/**/*.test.js'",
     "prettier": "npx prettier --cache --write .",
     "eslint": "npx eslint src/*.ts --fix",
     "tsc": "npx tsc --build",
     "tsc-watch": "npx tsc --watch",
-    "build": "npm run eslint && npm run prettier && npm run tsc",
-    "test": "node dist/test.js"
+    "build": "npm run eslint && npm run prettier && npm run tsc"
   },
   "author": "Frank Boës <info@3960.org> (https://3960.org/)",
   "license": "MIT",
